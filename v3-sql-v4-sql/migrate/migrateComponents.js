@@ -118,16 +118,28 @@ async function migrateTables(tables) {
     const tableName = table.replace(/_components$/, '');
 
     const tableIdColumn = singular(tableName);
+    if (table === '404s_components') {
+      await migrate(table, 'not_founds_components', (item) => {
+        const itemNew = {
+          ...item,
+          entity_id: item[`${tableIdColumn}_id`],
+          component_type: componentsMap[item.component_type] ?? item.component_type,
+        };
 
-    await migrate(table, table, (item) => {
-      const itemNew = {
-        ...item,
-        entity_id: item[`${tableIdColumn}_id`],
-        component_type: componentsMap[item.component_type] ?? item.component_type,
-      };
+        return omit(itemNew, [`${tableIdColumn}_id`]);
+      });
+    } else {
+      await migrate(table, table, (item) => {
+        //todo here
+        const itemNew = {
+          ...item,
+          entity_id: item[`${tableIdColumn}_id`],
+          component_type: componentsMap[item.component_type] ?? item.component_type,
+        };
 
-      return omit(itemNew, [`${tableIdColumn}_id`]);
-    });
+        return omit(itemNew, [`${tableIdColumn}_id`]);
+      });
+    }
     processedTables.push(table);
   }
 }

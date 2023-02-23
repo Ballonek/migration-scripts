@@ -4,7 +4,7 @@ const { resetTableSequence } = require('./migrate');
 const { migrateItems } = require('./migrateFields');
 const { migrateUids } = require('./migrateValues');
 const pluralize = require('pluralize');
-const { camelCase } = require('lodash');
+const { camelCase, omit } = require('lodash');
 const { resolveDestTableName, resolveSourceTableName } = require('./tableNameHelpers');
 
 const extraV4Permissions = [
@@ -48,7 +48,7 @@ async function migrateAdminPermissions() {
       .limit(BATCH_SIZE)
       .offset(page * BATCH_SIZE);
     const migratedItems = migrateItems(items, ({ role, ...item }) => ({
-      ...item,
+      ...omit(item, ['fields']),
       action: migrateUids(item.action),
       subject: migrateSubject(item.subject),
       properties: migrateProperties(item.properties),

@@ -16,7 +16,7 @@ async function migrateTables() {
     role_id: role.role_id,
     user_id: role.user_id,
   }));
-  await migrateAdminPermissions();
+  // await migrateAdminPermissions();
 }
 
 const migrateAdmin = {
